@@ -1,0 +1,5 @@
+rootProject.name = 'propagate'
+include 'query-lang'
+include 'client-jvm'
+include 'common'
+
