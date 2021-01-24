@@ -1,11 +1,11 @@
 package org.propagate.common.domain;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
@@ -13,9 +13,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class Environment implements Serializable {
+public class PercentageRollout implements Serializable {
     @NotEmpty
-    private String id;
+    private String variation;
 
-    private String name;
+    @Min(0)
+    private int percent;
 }

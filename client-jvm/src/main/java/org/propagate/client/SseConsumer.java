@@ -1,20 +1,21 @@
 package org.propagate.client;
 
+import org.propagate.client.v2.PropagateClient;
+
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 public class SseConsumer {
     public static void main(String[] args) throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
-
-        HighLevelPropagateClient client = HighLevelPropagateClient.newBuilder("\"production\"")
+        PropagateClient client = PropagateClient.newBuilder("production")
                 .withConnectionUri("http://localhost:8080/api/v1/ff")
                 .build();
 
-        client.start();
+        client.run();
 
-Thread.sleep(7000);
-        String result = client.eval("SNAPDEALTECH-90526-rollout-partial-delivery", Map.of("a", "44"), () -> "false");
+        Thread.sleep(7000);
+        String result = client.eval("SNAPDEALTECH-90526-rollout-partial-delivery", Map.of("a", "6", "b", "66"), () -> "false");
         System.out.println("Result >>> " + result);
 
         latch.await();

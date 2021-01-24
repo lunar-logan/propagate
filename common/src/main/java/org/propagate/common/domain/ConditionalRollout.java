@@ -1,6 +1,5 @@
 package org.propagate.common.domain;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,9 +12,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class Environment implements Serializable {
+public class ConditionalRollout implements Serializable {
     @NotEmpty
-    private String id;
+    private String variation;
 
-    private String name;
+    @NotEmpty
+    private String expression;
 }
