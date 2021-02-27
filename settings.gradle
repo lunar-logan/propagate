@@ -3,4 +3,6 @@ include 'query-lang'
 include 'client-jvm'
 include 'common'
 include 'server'
+include 'server-netty'
+include 'core'
 

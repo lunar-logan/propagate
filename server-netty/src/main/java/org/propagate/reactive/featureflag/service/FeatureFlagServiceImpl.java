@@ -1,20 +1,23 @@
-package org.propagate.server.service;
+package org.propagate.reactive.featureflag.service;
 
-import io.reactivex.Maybe;
-import io.reactivex.Observable;
 import lombok.AllArgsConstructor;
 import org.propagate.common.domain.Environment;
 import org.propagate.common.domain.FeatureFlag;
-import org.propagate.server.dao.EnvironmentDAO;
-import org.propagate.server.dao.FeatureFlagDAO;
-import org.propagate.server.entity.EnvironmentEntity;
-import org.propagate.server.entity.IDEntity;
-import org.propagate.server.util.ConversionUtils;
+import org.propagate.reactive.featureflag.EnvironmentEntity;
+import org.propagate.reactive.featureflag.FeatureFlagEntity;
+import org.propagate.reactive.featureflag.IDEntity;
+import org.propagate.reactive.featureflag.dao.EnvironmentDAO;
+import org.propagate.reactive.featureflag.dao.FeatureFlagDAO;
+import org.propagate.reactive.featureflag.internal.ConversionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -24,73 +27,73 @@ public class FeatureFlagServiceImpl implements FeatureFlagService {
 
     @Override
     @Transactional
-    public Maybe<Environment> createEnvironment(@NotEmpty String name) {
-        return Maybe.fromCallable(() -> EnvironmentEntity.builder()
+    public Mono<Environment> createEnvironment(@NotEmpty String name) {
+        return Mono.fromCallable(() -> EnvironmentEntity.builder()
                 .id(name)
                 .name(name)
                 .build())
-                .map(environmentDAO::save)
+                .flatMap(environmentDAO::save)
                 .map(ConversionUtils::toDomainModel);
     }
 
     @Override
     @Transactional
-    public Maybe<Void> deleteEnvironment(@NotEmpty String name) {
-        return Maybe.fromCallable(() -> {
+    public Mono<Void> deleteEnvironment(@NotEmpty String name) {
+        return Mono.fromCallable(() -> {
             environmentDAO.deleteById(name);
             return null;
         });
     }
 
     @Override
-    public Observable<Environment> getAllEnvironments() {
-        return Observable.fromIterable(environmentDAO.findAll())
+    public Flux<Environment> getAllEnvironments() {
+        return environmentDAO.findAll()
                 .map(ConversionUtils::toDomainModel);
     }
 
     @Override
     @Transactional
-    public Observable<FeatureFlag> createOrUpdate(@NotNull FeatureFlag featureFlag) {
+    public Flux<FeatureFlag> createOrUpdate(@NotNull FeatureFlag featureFlag) {
         return getAllEnvironments()
                 .map(env -> featureFlag.getId().toBuilder().env(env.getId()).build())
                 .map(id -> featureFlag.toBuilder().id(id).build())
                 .map(ConversionUtils::toEntity)
-                .toList()
-                .flattenAsObservable(featureFlagDAO::saveAll)
+                .collectList()
+                .flatMapMany(featureFlagDAO::saveAll)
                 .map(ConversionUtils::toDomainModel);
     }
 
     @Override
-    public Observable<FeatureFlag> getAllFeatureFlagsByKey(@NotEmpty String key) {
+    public Flux<FeatureFlag> getAllFeatureFlagsByKey(@NotEmpty String key) {
         return getAllEnvironments()
                 .map(env -> IDEntity.builder()
                         .key(key)
                         .env(env.getId())
                         .build())
-                .toList()
-                .flattenAsObservable(featureFlagDAO::findAllById)
+                .collectList()
+                .flatMapMany(featureFlagDAO::findAllById)
                 .map(ConversionUtils::toDomainModel);
     }
 
     @Override
-    public Observable<FeatureFlag> getAllFeatureFlags() {
-        return Observable.fromIterable(featureFlagDAO.findAll())
+    public Flux<FeatureFlag> getAllFeatureFlags() {
+        return featureFlagDAO.findAll()
                 .map(ConversionUtils::toDomainModel);
     }
 
     @Override
     @Transactional
-    public Observable<FeatureFlag> archiveFeatureFlag(String key) {
+    public Flux<FeatureFlag> archiveFeatureFlag(String key) {
         return getAllEnvironments()
                 .map(env -> IDEntity.builder()
                         .key(key)
                         .env(env.getId())
                         .build())
-                .toList()
-                .flattenAsObservable(featureFlagDAO::findAllById)
+                .collectList()
+                .flatMapMany(featureFlagDAO::findAllById)
                 .map(ff -> ff.toBuilder().archived(true).build())
-                .toList()
-                .flattenAsObservable(featureFlagDAO::saveAll)
+                .collectList()
+                .flatMapMany(featureFlagDAO::saveAll)
                 .map(ConversionUtils::toDomainModel);
     }
 }

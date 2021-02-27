@@ -3,6 +3,11 @@ package org.propagate.common.domain.util;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * Utility either monad.
+ *
+ * @param <R>
+ */
 public class Either<R> {
     private final Exception left;
     private final R right;
@@ -44,5 +49,15 @@ public class Either<R> {
             return supplier.get();
         }
         return getRight();
+    }
+
+    public static <T, R> Function<T, Either<R>> lift(CheckedFunction<T, R> fn) {
+        return t -> {
+            try {
+                return right(fn.apply(t));
+            } catch (Exception e) {
+                return left(e);
+            }
+        };
     }
 }
