@@ -10,7 +10,7 @@
   "description": "Controls rollout of partial delivery feature",
   "id": {
     "env": "production",
-    "key": "SNAPDEALTECH-90526-rollout-partial-delivery"
+    "key": "SDTECH-90526-rollout-partial-delivery"
   },
   "name": "Partial delivery rollout feature flag",
   "percentRollout": [
