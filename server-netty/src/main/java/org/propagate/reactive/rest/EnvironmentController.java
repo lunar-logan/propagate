@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,6 +20,26 @@ import java.util.Map;
 @Slf4j
 public class EnvironmentController {
     private final FeatureFlagService service;
+
+    @GetMapping
+    public Mono<ResponseEntity<List<Environment>>> getAllEnvironments() {
+        return service.getAllEnvironments()
+                .collectList()
+                .map(ResponseEntity::ok)
+                .switchIfEmpty(Mono.fromSupplier(() -> ResponseEntity.ok(Collections.emptyList())));
+    }
+
+    @GetMapping("{id}")
+    public Mono<ResponseEntity<Environment>> getEnvironment(@PathVariable String id) {
+        return service.getEnvironment(id)
+                .map(ResponseEntity::ok);
+    }
+
+    @DeleteMapping("{id}")
+    public Mono<ResponseEntity<?>> deleteEnvironment(@PathVariable String id) {
+        return service.deleteEnvironment(id)
+                .thenReturn(ResponseEntity.ok().build());
+    }
 
     @PostMapping
     public Mono<ResponseEntity<Environment>> createEnvironment(@RequestBody @Valid Environment env) {

@@ -1,7 +1,13 @@
 package org.propagate.reactive.featureflag.internal;
 
-import org.propagate.common.domain.*;
+import org.propagate.common.domain.Environment;
+import org.propagate.common.domain.FeatureFlag;
+import org.propagate.common.domain.FeatureFlagType;
+import org.propagate.common.domain.ID;
+import org.propagate.common.domain.rollout.ConditionalRollout;
+import org.propagate.common.domain.rollout.PercentageRollout;
 import org.propagate.reactive.featureflag.*;
+import org.propagate.reactive.featureflag.entity.FeatureFlagEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;

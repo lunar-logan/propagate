@@ -16,6 +16,8 @@ public interface FeatureFlagService {
 
     Flux<Environment> getAllEnvironments();
 
+    Mono<Environment> getEnvironment(String name);
+
     Flux<FeatureFlag> createOrUpdate(@NotNull @Valid FeatureFlag featureFlag);
 
     Flux<FeatureFlag> getAllFeatureFlagsByKey(@NotEmpty String key);

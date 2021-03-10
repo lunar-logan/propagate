@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.propagate.common.domain.Environment;
 import org.propagate.common.domain.FeatureFlag;
 import org.propagate.reactive.featureflag.EnvironmentEntity;
-import org.propagate.reactive.featureflag.FeatureFlagEntity;
 import org.propagate.reactive.featureflag.IDEntity;
 import org.propagate.reactive.featureflag.dao.EnvironmentDAO;
 import org.propagate.reactive.featureflag.dao.FeatureFlagDAO;
@@ -16,8 +15,6 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Collections;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -37,12 +34,15 @@ public class FeatureFlagServiceImpl implements FeatureFlagService {
     }
 
     @Override
-    @Transactional
     public Mono<Void> deleteEnvironment(@NotEmpty String name) {
-        return Mono.fromCallable(() -> {
-            environmentDAO.deleteById(name);
-            return null;
-        });
+        return environmentDAO.findById(name)
+
+                // Delete all the feature flags mapped with this environment
+                .flatMap(env -> featureFlagDAO.findAllByEnvironment(env.getId()).collectList())
+                .flatMap(featureFlagDAO::deleteAll)
+
+                // Finally delete the environment
+                .then(environmentDAO.deleteById(name));
     }
 
     @Override
@@ -52,8 +52,15 @@ public class FeatureFlagServiceImpl implements FeatureFlagService {
     }
 
     @Override
+    public Mono<Environment> getEnvironment(String name) {
+        return environmentDAO.findById(name)
+                .map(ConversionUtils::toDomainModel);
+    }
+
+    @Override
     @Transactional
     public Flux<FeatureFlag> createOrUpdate(@NotNull FeatureFlag featureFlag) {
+        // Feature flag has to be created for every environment
         return getAllEnvironments()
                 .map(env -> featureFlag.getId().toBuilder().env(env.getId()).build())
                 .map(id -> featureFlag.toBuilder().id(id).build())

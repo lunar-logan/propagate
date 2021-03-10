@@ -1,7 +1,7 @@
 package org.propagate.common.domain.constraint;
 
-import org.propagate.common.domain.ConditionalRollout;
 import org.propagate.common.domain.FeatureFlag;
+import org.propagate.common.domain.rollout.ConditionalRollout;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

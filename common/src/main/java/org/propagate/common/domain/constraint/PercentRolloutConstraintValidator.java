@@ -1,7 +1,7 @@
 package org.propagate.common.domain.constraint;
 
 import org.propagate.common.domain.FeatureFlag;
-import org.propagate.common.domain.PercentageRollout;
+import org.propagate.common.domain.rollout.PercentageRollout;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

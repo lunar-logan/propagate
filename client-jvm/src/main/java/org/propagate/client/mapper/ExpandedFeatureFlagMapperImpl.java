@@ -2,9 +2,9 @@ package org.propagate.client.mapper;
 
 import org.propagate.client.model.ExpandedFeatureFlag;
 import org.propagate.client.model.PercentRollout;
-import org.propagate.common.domain.ConditionalRollout;
 import org.propagate.common.domain.FeatureFlag;
-import org.propagate.common.domain.PercentageRollout;
+import org.propagate.common.domain.rollout.ConditionalRollout;
+import org.propagate.common.domain.rollout.PercentageRollout;
 import org.propagate.query.Query;
 import org.propagate.query.QueryFactory;
 

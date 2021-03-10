@@ -4,18 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.propagate.common.domain.rollout.RolloutRule;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class ConditionalRollout implements Serializable {
-    @NotEmpty
-    private String variation;
+public class Rollout implements Serializable {
+    @NotNull
+    private Environment environment;
 
     @NotEmpty
-    private String expression;
+    @Valid
+    private List<RolloutRule> rules;
 }

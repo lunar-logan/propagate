@@ -1,6 +1,11 @@
 package org.propagate.server.util;
 
-import org.propagate.common.domain.*;
+import org.propagate.common.domain.Environment;
+import org.propagate.common.domain.FeatureFlag;
+import org.propagate.common.domain.FeatureFlagType;
+import org.propagate.common.domain.ID;
+import org.propagate.common.domain.rollout.ConditionalRollout;
+import org.propagate.common.domain.rollout.PercentageRollout;
 import org.propagate.server.entity.*;
 
 import java.util.List;

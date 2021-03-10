@@ -1,13 +1,17 @@
-package org.propagate.reactive.featureflag;
+package org.propagate.reactive.featureflag.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.propagate.reactive.featureflag.ConditionalRolloutEntity;
+import org.propagate.reactive.featureflag.IDEntity;
+import org.propagate.reactive.featureflag.PercentRolloutEntity;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
@@ -22,6 +26,9 @@ import java.util.List;
 public class FeatureFlagEntity implements Serializable {
     @Id
     private IDEntity id;
+
+    @Indexed
+    private String environment;
 
     private String name;
 
