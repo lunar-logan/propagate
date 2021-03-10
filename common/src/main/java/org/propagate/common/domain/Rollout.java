@@ -8,7 +8,6 @@ import org.propagate.common.domain.rollout.RolloutRule;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -17,8 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class Rollout implements Serializable {
-    @NotNull
-    private Environment environment;
+    @NotEmpty
+    private String environment;
 
     @NotEmpty
     @Valid

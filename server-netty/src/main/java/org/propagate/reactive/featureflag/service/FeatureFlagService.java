@@ -18,11 +18,11 @@ public interface FeatureFlagService {
 
     Mono<Environment> getEnvironment(String name);
 
-    Flux<FeatureFlag> createOrUpdate(@NotNull @Valid FeatureFlag featureFlag);
+    Mono<FeatureFlag> createOrUpdate(@NotNull @Valid FeatureFlag featureFlag);
 
-    Flux<FeatureFlag> getAllFeatureFlagsByKey(@NotEmpty String key);
+    Mono<FeatureFlag> getFeatureFlagByKey(@NotEmpty String key);
 
     Flux<FeatureFlag> getAllFeatureFlags();
 
-    Flux<FeatureFlag> archiveFeatureFlag(@NotEmpty String key);
+    Mono<FeatureFlag> archiveFeatureFlag(@NotEmpty String key);
 }

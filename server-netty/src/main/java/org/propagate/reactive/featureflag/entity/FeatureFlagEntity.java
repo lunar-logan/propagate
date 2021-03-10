@@ -4,14 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.propagate.reactive.featureflag.ConditionalRolloutEntity;
-import org.propagate.reactive.featureflag.IDEntity;
-import org.propagate.reactive.featureflag.PercentRolloutEntity;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
@@ -24,11 +20,11 @@ import java.util.List;
 @Builder(toBuilder = true)
 @Document
 public class FeatureFlagEntity implements Serializable {
-    @Id
-    private IDEntity id;
+//    @Id
+//    private IDEntity id;
 
-    @Indexed
-    private String environment;
+    @Id
+    private String id;
 
     private String name;
 
@@ -36,11 +32,18 @@ public class FeatureFlagEntity implements Serializable {
 
     private String type;
 
+    /**
+     * List of all the valid variations
+     */
     private List<String> variations;
 
+    @Deprecated
     private List<ConditionalRolloutEntity> conditionalRollout;
 
+    @Deprecated
     private List<PercentRolloutEntity> percentRollout;
+
+    private List<RolloutEntity> rolloutRules;
 
     private String defaultRollout;
 

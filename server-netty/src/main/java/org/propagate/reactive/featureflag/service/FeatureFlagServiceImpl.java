@@ -3,10 +3,9 @@ package org.propagate.reactive.featureflag.service;
 import lombok.AllArgsConstructor;
 import org.propagate.common.domain.Environment;
 import org.propagate.common.domain.FeatureFlag;
-import org.propagate.reactive.featureflag.EnvironmentEntity;
-import org.propagate.reactive.featureflag.IDEntity;
 import org.propagate.reactive.featureflag.dao.EnvironmentDAO;
 import org.propagate.reactive.featureflag.dao.FeatureFlagDAO;
+import org.propagate.reactive.featureflag.entity.EnvironmentEntity;
 import org.propagate.reactive.featureflag.internal.ConversionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,14 +34,15 @@ public class FeatureFlagServiceImpl implements FeatureFlagService {
 
     @Override
     public Mono<Void> deleteEnvironment(@NotEmpty String name) {
-        return environmentDAO.findById(name)
-
-                // Delete all the feature flags mapped with this environment
-                .flatMap(env -> featureFlagDAO.findAllByEnvironment(env.getId()).collectList())
-                .flatMap(featureFlagDAO::deleteAll)
-
-                // Finally delete the environment
-                .then(environmentDAO.deleteById(name));
+//        return environmentDAO.findById(name)
+//
+//                // Delete all the feature flags mapped with this environment
+//                .flatMap(env -> featureFlagDAO.findAllByEnvironment(env.getId()).collectList())
+//                .flatMap(featureFlagDAO::deleteAll)
+//
+//                // Finally delete the environment
+//                .then(environmentDAO.deleteById(name));
+        return Mono.error(new UnsupportedOperationException());
     }
 
     @Override
@@ -58,27 +58,17 @@ public class FeatureFlagServiceImpl implements FeatureFlagService {
     }
 
     @Override
-    @Transactional
-    public Flux<FeatureFlag> createOrUpdate(@NotNull FeatureFlag featureFlag) {
+    public Mono<FeatureFlag> createOrUpdate(@NotNull FeatureFlag featureFlag) {
         // Feature flag has to be created for every environment
-        return getAllEnvironments()
-                .map(env -> featureFlag.getId().toBuilder().env(env.getId()).build())
-                .map(id -> featureFlag.toBuilder().id(id).build())
-                .map(ConversionUtils::toEntity)
-                .collectList()
-                .flatMapMany(featureFlagDAO::saveAll)
+        return Mono.fromSupplier(() -> ConversionUtils.toEntity(featureFlag))
+                .flatMap(featureFlagDAO::save)
                 .map(ConversionUtils::toDomainModel);
     }
 
     @Override
-    public Flux<FeatureFlag> getAllFeatureFlagsByKey(@NotEmpty String key) {
-        return getAllEnvironments()
-                .map(env -> IDEntity.builder()
-                        .key(key)
-                        .env(env.getId())
-                        .build())
-                .collectList()
-                .flatMapMany(featureFlagDAO::findAllById)
+    public Mono<FeatureFlag> getFeatureFlagByKey(String key) {
+        return Mono.justOrEmpty(key)
+                .flatMap(ffKey -> featureFlagDAO.findById(key))
                 .map(ConversionUtils::toDomainModel);
     }
 
@@ -89,18 +79,11 @@ public class FeatureFlagServiceImpl implements FeatureFlagService {
     }
 
     @Override
-    @Transactional
-    public Flux<FeatureFlag> archiveFeatureFlag(String key) {
-        return getAllEnvironments()
-                .map(env -> IDEntity.builder()
-                        .key(key)
-                        .env(env.getId())
-                        .build())
-                .collectList()
-                .flatMapMany(featureFlagDAO::findAllById)
-                .map(ff -> ff.toBuilder().archived(true).build())
-                .collectList()
-                .flatMapMany(featureFlagDAO::saveAll)
+    public Mono<FeatureFlag> archiveFeatureFlag(String key) {
+        return Mono.justOrEmpty(key)
+                .flatMap(featureFlagDAO::findById)
+                .doOnNext(entity -> entity.setArchived(true))
+                .flatMap(featureFlagDAO::save)
                 .map(ConversionUtils::toDomainModel);
     }
 }

@@ -1,4 +1,4 @@
-package org.propagate.reactive.featureflag;
+package org.propagate.reactive.featureflag.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

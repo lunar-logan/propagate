@@ -14,5 +14,5 @@ dependencies {
     compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.16'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.16'
-
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.2'
 }

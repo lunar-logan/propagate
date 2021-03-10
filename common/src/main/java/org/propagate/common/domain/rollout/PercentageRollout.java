@@ -1,21 +1,18 @@
 package org.propagate.common.domain.rollout;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.Min;
 
 @SuperBuilder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class PercentageRollout extends RolloutRule {
     @Min(0)
     private int percent;
 
-    public PercentageRollout(String variation, @Min(0) int percent) {
-        super(variation);
-        this.percent = percent;
-    }
-
-    public PercentageRollout() {
-    }
 
     public int getPercent() {
         return percent;

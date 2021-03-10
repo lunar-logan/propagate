@@ -1,20 +1,16 @@
 package org.propagate.common.domain.rollout;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class ConditionalRollout extends RolloutRule implements Serializable {
     private String expression;
-
-    public ConditionalRollout(String variation, String expression) {
-        super(variation);
-        this.expression = expression;
-    }
-
-    public ConditionalRollout() {
-    }
 
     public String getExpression() {
         return expression;

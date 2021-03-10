@@ -6,28 +6,31 @@ import org.propagate.common.domain.FeatureFlag;
 import org.propagate.reactive.common.exception.ExceptionUtils;
 import org.propagate.reactive.featureflag.service.FeatureFlagService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
 
 @RestController
 @RequestMapping("/api/v1/ff")
 @AllArgsConstructor
-@Validated
 @Slf4j
 public class FeatureFlagController {
     private final FeatureFlagService service;
-    private final ScheduledExecutorService scheduledExecutorService = null;//Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
 
     @PostMapping
-    public Mono<ResponseEntity<List<FeatureFlag>>> createFeatureFlags(@RequestBody @Valid FeatureFlag flag) {
-        return service.createOrUpdate(flag)
-                .collectList()
+    public Mono<ResponseEntity<FeatureFlag>> createOrUpdateFeatureFlag(@RequestBody FeatureFlag flag) {
+        return Mono.justOrEmpty(flag)
+                .log()
+                .flatMap(service::createOrUpdate)
+                .log()
+                .map(ResponseEntity::ok);
+    }
+
+    @GetMapping("{key}")
+    public Mono<ResponseEntity<FeatureFlag>> getFeatureFlagByKey(@PathVariable String key) {
+        return service.getFeatureFlagByKey(key)
                 .log()
                 .map(ResponseEntity::ok);
     }

@@ -1,0 +1,37 @@
+{
+  "key": "shipping.partial.delivery.rollout",
+  "name": "Partial delivery rollout feature flag as part of SNAPDEALTECH-90526",
+  "description": "Controls rollout of partial delivery feature",
+  "type": "BOOLEAN",
+  "variations": [
+    "true",
+    "false"
+  ],
+  "defaultRollout": "false",
+  "rolloutRules": [
+    {
+      "environment": "production",
+      "rules": [
+        {
+          "variation": "true",
+          "percent": 100,
+          "type": "percent"
+        },
+        {
+          "variation": "false",
+          "percent": 0,
+          "type": "percent"
+        },
+        {
+          "variation": "true",
+          "expression": "a=\"44\" OR b=\"66\"",
+          "type": "conditional"
+        }
+      ]
+    }
+  ],
+  "defaultRolloutTargetingOn": null,
+  "defaultRolloutTargetingOff": null,
+  "archived": false,
+  "targeting": false
+}

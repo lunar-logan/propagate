@@ -1,13 +1,10 @@
 package org.propagate.reactive.featureflag.internal;
 
-import org.propagate.common.domain.Environment;
-import org.propagate.common.domain.FeatureFlag;
-import org.propagate.common.domain.FeatureFlagType;
-import org.propagate.common.domain.ID;
+import org.propagate.common.domain.*;
 import org.propagate.common.domain.rollout.ConditionalRollout;
 import org.propagate.common.domain.rollout.PercentageRollout;
-import org.propagate.reactive.featureflag.*;
-import org.propagate.reactive.featureflag.entity.FeatureFlagEntity;
+import org.propagate.common.domain.rollout.RolloutRule;
+import org.propagate.reactive.featureflag.entity.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,38 +26,84 @@ public final class ConversionUtils {
 
     public static FeatureFlagEntity toEntity(FeatureFlag flag) {
         return FeatureFlagEntity.builder()
-                .id(toEntity(flag.getId()))
+                .id(flag.getKey())
                 .name(flag.getName())
                 .description(flag.getDescription())
                 .type(flag.getType().name())
                 .variations(flag.getVariations())
                 .defaultRollout(flag.getDefaultRollout())
-                .conditionalRollout(emptyIfNull(flag.getConditionalRollout()).stream()
+                .rolloutRules(flag.getRolloutRules()
+                        .stream()
                         .map(ConversionUtils::toEntity)
                         .collect(Collectors.toList()))
-                .percentRollout(emptyIfNull(flag.getPercentRollout()).stream()
-                        .map(ConversionUtils::toEntity)
-                        .collect(Collectors.toList()))
+                .targeting(flag.isTargeting())
                 .archived(flag.isArchived())
+                .build();
+    }
+
+    private static RolloutEntity toEntity(Rollout rollout) {
+        return RolloutEntity.builder()
+                .environment(rollout.getEnvironment())
+                .rules(rollout.getRules().stream()
+                        .map(ConversionUtils::toEntity)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    private static RolloutRuleEntity toEntity(RolloutRule rolloutRule) {
+        if (rolloutRule instanceof ConditionalRollout) {
+            return ConditionalRolloutEntity.builder()
+                    .expression(((ConditionalRollout) rolloutRule).getExpression())
+                    .variation(rolloutRule.getVariation())
+                    .type("conditional")
+                    .build();
+        }
+        return PercentRolloutEntity.builder()
+                .percent(((PercentageRollout) rolloutRule).getPercent())
+                .variation(rolloutRule.getVariation())
+                .type("percent")
                 .build();
     }
 
     public static FeatureFlag toDomainModel(FeatureFlagEntity flag) {
         return FeatureFlag.builder()
-                .id(toDomainModel(flag.getId()))
+                .key(flag.getId())
                 .name(flag.getName())
                 .description(flag.getDescription())
                 .type(FeatureFlagType.valueOf(flag.getType().toUpperCase()))
                 .variations(flag.getVariations())
                 .defaultRollout(flag.getDefaultRollout())
-                .conditionalRollout(emptyIfNull(flag.getConditionalRollout()).stream()
+                .rolloutRules(flag.getRolloutRules().stream()
                         .map(ConversionUtils::toDomainModel)
                         .collect(Collectors.toList()))
-                .percentRollout(emptyIfNull(flag.getPercentRollout()).stream()
-                        .map(ConversionUtils::toDomainModel)
-                        .collect(Collectors.toList()))
+                .targeting(flag.isTargeting())
                 .archived(flag.isArchived())
                 .build();
+    }
+
+    private static Rollout toDomainModel(RolloutEntity rolloutEntity) {
+        return Rollout.builder()
+                .environment(rolloutEntity.getEnvironment())
+                .rules(rolloutEntity.getRules().stream()
+                        .map(ConversionUtils::toDomainModel)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    private static RolloutRule toDomainModel(RolloutRuleEntity rolloutRuleEntity) {
+        if (rolloutRuleEntity instanceof ConditionalRolloutEntity) {
+            return ConditionalRollout.builder()
+                    .expression(((ConditionalRolloutEntity) rolloutRuleEntity).getExpression())
+                    .variation(rolloutRuleEntity.getVariation())
+                    .type(rolloutRuleEntity.getType())
+                    .build();
+        }
+        return PercentageRollout.builder()
+                .variation(rolloutRuleEntity.getVariation())
+                .percent(((PercentRolloutEntity) rolloutRuleEntity).getPercent())
+                .type(rolloutRuleEntity.getType())
+                .build();
+
     }
 
     private static PercentRolloutEntity toEntity(PercentageRollout percentageRollout) {
@@ -91,7 +134,7 @@ public final class ConversionUtils {
                 .build();
     }
 
-    private static ConditionalRollout toDomainModel(ConditionalRolloutEntity rollout){
+    private static ConditionalRollout toDomainModel(ConditionalRolloutEntity rollout) {
         return ConditionalRollout.builder()
                 .expression(rollout.getExpression())
                 .variation(rollout.getVariation())

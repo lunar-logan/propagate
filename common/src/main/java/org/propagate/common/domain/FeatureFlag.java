@@ -1,12 +1,10 @@
 package org.propagate.common.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.propagate.common.domain.constraint.ConditionalRolloutVariationsConstraint;
-import org.propagate.common.domain.constraint.PercentRolloutConstraint;
-import org.propagate.common.domain.constraint.PercentRolloutVariationConstraint;
 import org.propagate.common.domain.rollout.ConditionalRollout;
 import org.propagate.common.domain.rollout.PercentageRollout;
 
@@ -22,14 +20,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 @Valid
-@ConditionalRolloutVariationsConstraint
-@PercentRolloutVariationConstraint
-@PercentRolloutConstraint
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FeatureFlag implements Serializable {
-    @NotNull
-    @Valid
-    private ID id;
-
     /**
      * Every feature flag is uniquely identified by its key
      */
