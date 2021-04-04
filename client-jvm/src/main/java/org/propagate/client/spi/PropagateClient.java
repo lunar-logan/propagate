@@ -4,16 +4,10 @@ import org.propagate.client.provider.websocket.Jdk11BasedWebsocketClientImpl;
 
 import java.net.URI;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Supplier;
 
-public interface PropagateClient extends Runnable {
+public interface PropagateClient extends Runnable, AutoCloseable {
     String eval(String key, Map<String, Object> ctx, Supplier<String> fallback);
-
-    @Deprecated
-    static LegacyPollingBasedPropagateClientBuilder newBuilder(String env) {
-        return new LegacyPollingBasedPropagateClientBuilder(Objects.requireNonNull(env));
-    }
 
     /**
      * Returns a <b>Websocket</b> backed Propagate client instance.

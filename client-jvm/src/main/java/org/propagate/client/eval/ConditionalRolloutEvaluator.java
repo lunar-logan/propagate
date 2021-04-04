@@ -1,34 +1,39 @@
 package org.propagate.client.eval;
 
 import org.propagate.client.model.ExpandedFeatureFlag;
-import org.propagate.common.domain.util.Either;
+import org.propagate.query.Query;
 
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 public class ConditionalRolloutEvaluator implements Evaluator {
     private final ExpandedFeatureFlag expandedFeatureFlag;
-    private final Map<String, Object> ctx;
+    private final EvaluationContext ctx;
 
-    public ConditionalRolloutEvaluator(ExpandedFeatureFlag expandedFeatureFlag, Map<String, Object> ctx) {
-        this.expandedFeatureFlag = expandedFeatureFlag;
-        this.ctx = ctx;
+    public ConditionalRolloutEvaluator(ExpandedFeatureFlag expandedFeatureFlag, EvaluationContext ctx) {
+        this.expandedFeatureFlag = Objects.requireNonNull(expandedFeatureFlag);
+        this.ctx = Objects.requireNonNull(ctx);
     }
 
     @Override
-    public Either<String> eval() {
-        if (expandedFeatureFlag.getConditionalRollout() == null) {
-            return Either.left(new NullPointerException("conditional rollout is null"));
+    public Optional<String> eval() {
+        if (expandedFeatureFlag.getConditionalRolloutRules() == null) {
+            throw new IllegalArgumentException("Conditional rollout rules are null");
         }
-        try {
-            String result = expandedFeatureFlag.getConditionalRollout().entrySet()
-                    .stream()
-                    .filter(e -> e.getKey().eval(ctx))
-                    .findAny()
-                    .map(Map.Entry::getValue)
-                    .orElseThrow();
-            return Either.right(result);
-        } catch (Exception ex) {
-            return Either.left(ex);
+
+        Map<Query, String> queryMap = expandedFeatureFlag.getConditionalRolloutRules().get(ctx.getEnvironment());
+        if (queryMap == null) {
+            throw new IllegalArgumentException("No conditional rules found for environment \"" + ctx.getEnvironment() + "\"");
         }
+
+        final String result = queryMap
+                .entrySet()
+                .stream()
+                .filter(e -> e.getKey().eval(ctx.getCtx()))
+                .findAny()
+                .map(Map.Entry::getValue)
+                .orElse(null);
+        return Optional.ofNullable(result);
     }
 }

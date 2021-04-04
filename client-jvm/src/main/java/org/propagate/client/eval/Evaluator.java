@@ -1,7 +1,7 @@
 package org.propagate.client.eval;
 
-import org.propagate.common.domain.util.Either;
+import java.util.Optional;
 
 public interface Evaluator {
-    Either<String> eval();
+    Optional<String> eval();
 }

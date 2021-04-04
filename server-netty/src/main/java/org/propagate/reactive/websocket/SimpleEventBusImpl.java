@@ -1,4 +1,4 @@
-package org.propagate.reactive.featureflag.websocket;
+package org.propagate.reactive.websocket;
 
 import org.propagate.common.domain.util.Either;
 import reactor.core.publisher.Flux;

@@ -1,4 +1,4 @@
-package org.propagate.reactive.featureflag.websocket;
+package org.propagate.reactive.websocket;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

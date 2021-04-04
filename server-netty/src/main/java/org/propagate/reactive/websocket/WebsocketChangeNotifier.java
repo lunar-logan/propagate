@@ -1,4 +1,4 @@
-package org.propagate.reactive.featureflag.websocket;
+package org.propagate.reactive.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -38,11 +38,11 @@ public class WebsocketChangeNotifier implements WebSocketHandler {
      * Returns a {@code Flux} that generates an event every "x" seconds, containing all
      * the feature flags.
      *
-     * @param delayDuration amount of time to wait in seconds before emitting each event
+     * @param delayDurationSeconds amount of time to wait in seconds before emitting each event
      * @return {@code Flux<List<FeatureFlag>>}
      */
-    private Flux<List<FeatureFlag>> generateDelayedFFUpdateEvents(int delayDuration) {
-        return Flux.interval(Duration.ofSeconds(delayDuration))
+    private Flux<List<FeatureFlag>> generateDelayedFFUpdateEvents(int delayDurationSeconds) {
+        return Flux.interval(Duration.ofSeconds(delayDurationSeconds))
                 .flatMap(ignore -> featureFlagService.getAllFeatureFlags()
                         .collectList());
     }

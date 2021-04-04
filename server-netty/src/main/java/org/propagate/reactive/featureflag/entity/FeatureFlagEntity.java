@@ -47,6 +47,10 @@ public class FeatureFlagEntity implements Serializable {
 
     private String defaultRollout;
 
+    private String defaultRolloutTargetingOn;
+
+    private String defaultRolloutTargetingOff;
+
     @Builder.Default
     private boolean archived = Boolean.FALSE;
 

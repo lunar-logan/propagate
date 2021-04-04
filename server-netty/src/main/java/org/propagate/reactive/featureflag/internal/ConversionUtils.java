@@ -32,6 +32,8 @@ public final class ConversionUtils {
                 .type(flag.getType().name())
                 .variations(flag.getVariations())
                 .defaultRollout(flag.getDefaultRollout())
+                .defaultRolloutTargetingOff(flag.getDefaultRolloutTargetingOff())
+                .defaultRolloutTargetingOn(flag.getDefaultRolloutTargetingOn())
                 .rolloutRules(flag.getRolloutRules()
                         .stream()
                         .map(ConversionUtils::toEntity)
@@ -76,6 +78,8 @@ public final class ConversionUtils {
                 .rolloutRules(flag.getRolloutRules().stream()
                         .map(ConversionUtils::toDomainModel)
                         .collect(Collectors.toList()))
+                .defaultRolloutTargetingOff(flag.getDefaultRolloutTargetingOff())
+                .defaultRolloutTargetingOn(flag.getDefaultRolloutTargetingOn())
                 .targeting(flag.isTargeting())
                 .archived(flag.isArchived())
                 .build();
@@ -125,33 +129,5 @@ public final class ConversionUtils {
             return List.of();
         }
         return list;
-    }
-
-    private static ConditionalRolloutEntity toEntity(ConditionalRollout rollout) {
-        return ConditionalRolloutEntity.builder()
-                .expression(rollout.getExpression())
-                .variation(rollout.getVariation())
-                .build();
-    }
-
-    private static ConditionalRollout toDomainModel(ConditionalRolloutEntity rollout) {
-        return ConditionalRollout.builder()
-                .expression(rollout.getExpression())
-                .variation(rollout.getVariation())
-                .build();
-    }
-
-    private static IDEntity toEntity(ID id) {
-        return IDEntity.builder()
-                .key(id.getKey())
-                .env(id.getEnv())
-                .build();
-    }
-
-    private static ID toDomainModel(IDEntity id) {
-        return ID.builder()
-                .key(id.getKey())
-                .env(id.getEnv())
-                .build();
     }
 }

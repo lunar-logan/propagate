@@ -7,49 +7,41 @@ import java.util.List;
 import java.util.Map;
 
 public class ExpandedFeatureFlag {
-    private String key;
-    private String env;
+    private String id;
     private String name;
     private String description;
     private List<String> variations;
     private FeatureFlagType type;
-    private Map<Query, String> conditionalRollout;
-    private List<PercentRollout> percentRollout;
-    private String defaultRollout;
+    private Map<String, Map<Query, String>> conditionalRolloutRules;
+    private Map<String, List<PercentRollout>> percentRolloutRules;
+    private String defaultRolloutTargetingOn;
+    private String defaultRolloutTargetingOff;
     private boolean targeting;
     private boolean archived;
 
     public ExpandedFeatureFlag() {
     }
 
-    public ExpandedFeatureFlag(String key, String env, String name, String description, List<String> variations, FeatureFlagType type, Map<Query, String> conditionalRollout, List<PercentRollout> percentRollout, String defaultRollout, boolean targeting, boolean archived) {
-        this.key = key;
-        this.env = env;
+    public ExpandedFeatureFlag(String id, String name, String description, List<String> variations, FeatureFlagType type, Map<String, Map<Query, String>> conditionalRolloutRules, Map<String, List<PercentRollout>> percentRolloutRules, String defaultRolloutTargetingOn, String defaultRolloutTargetingOff, boolean targeting, boolean archived) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.variations = variations;
         this.type = type;
-        this.conditionalRollout = conditionalRollout;
-        this.percentRollout = percentRollout;
-        this.defaultRollout = defaultRollout;
+        this.conditionalRolloutRules = conditionalRolloutRules;
+        this.percentRolloutRules = percentRolloutRules;
+        this.defaultRolloutTargetingOn = defaultRolloutTargetingOn;
+        this.defaultRolloutTargetingOff = defaultRolloutTargetingOff;
         this.targeting = targeting;
         this.archived = archived;
     }
 
-    public String getKey() {
-        return key;
+    public String getId() {
+        return id;
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getEnv() {
-        return env;
-    }
-
-    public void setEnv(String env) {
-        this.env = env;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -84,28 +76,36 @@ public class ExpandedFeatureFlag {
         this.type = type;
     }
 
-    public Map<Query, String> getConditionalRollout() {
-        return conditionalRollout;
+    public Map<String, Map<Query, String>> getConditionalRolloutRules() {
+        return conditionalRolloutRules;
     }
 
-    public void setConditionalRollout(Map<Query, String> conditionalRollout) {
-        this.conditionalRollout = conditionalRollout;
+    public void setConditionalRolloutRules(Map<String, Map<Query, String>> conditionalRolloutRules) {
+        this.conditionalRolloutRules = conditionalRolloutRules;
     }
 
-    public List<PercentRollout> getPercentRollout() {
-        return percentRollout;
+    public Map<String, List<PercentRollout>> getPercentRolloutRules() {
+        return percentRolloutRules;
     }
 
-    public void setPercentRollout(List<PercentRollout> percentRollout) {
-        this.percentRollout = percentRollout;
+    public void setPercentRolloutRules(Map<String, List<PercentRollout>> percentRolloutRules) {
+        this.percentRolloutRules = percentRolloutRules;
     }
 
-    public String getDefaultRollout() {
-        return defaultRollout;
+    public String getDefaultRolloutTargetingOn() {
+        return defaultRolloutTargetingOn;
     }
 
-    public void setDefaultRollout(String defaultRollout) {
-        this.defaultRollout = defaultRollout;
+    public void setDefaultRolloutTargetingOn(String defaultRolloutTargetingOn) {
+        this.defaultRolloutTargetingOn = defaultRolloutTargetingOn;
+    }
+
+    public String getDefaultRolloutTargetingOff() {
+        return defaultRolloutTargetingOff;
+    }
+
+    public void setDefaultRolloutTargetingOff(String defaultRolloutTargetingOff) {
+        this.defaultRolloutTargetingOff = defaultRolloutTargetingOff;
     }
 
     public boolean isTargeting() {
@@ -127,15 +127,15 @@ public class ExpandedFeatureFlag {
     @Override
     public String toString() {
         return "ExpandedFeatureFlag{" +
-                "key='" + key + '\'' +
-                ", env='" + env + '\'' +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", variations=" + variations +
                 ", type=" + type +
-                ", conditionalRollout=" + conditionalRollout +
-                ", percentRollout=" + percentRollout +
-                ", defaultRollout='" + defaultRollout + '\'' +
+                ", conditionalRolloutRules=" + conditionalRolloutRules +
+                ", percentRolloutRules=" + percentRolloutRules +
+                ", defaultRolloutTargetingOn='" + defaultRolloutTargetingOn + '\'' +
+                ", defaultRolloutTargetingOff='" + defaultRolloutTargetingOff + '\'' +
                 ", targeting=" + targeting +
                 ", archived=" + archived +
                 '}';
