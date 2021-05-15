@@ -1,0 +1,70 @@
+POST localhost:8080/api/v1/featureflag
+Content-Type: application/json
+
+{
+  "id": "609fdc1e408e53518694907f",
+  "key": "sd-partial-delivery",
+  "name": "Partial Delivery Rollout Feature",
+  "type": "STRING",
+  "variations": [
+    "OFF",
+    "SHADOW",
+    "ON"
+  ],
+  "targeting": true,
+  "archived": false,
+  "rolloutRules": [
+    {
+      "namespace": "stg",
+      "defaultVariationTargetingOff": "OFF",
+      "defaultVariationTargetingOn": "OFF",
+      "rolloutRules": [
+        {
+          "type": "PERCENT",
+          "percentDistribution": [
+            {
+              "variation": "SHADOW",
+              "percent": 90
+            },
+            {
+              "variation": "ON",
+              "percent": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "production",
+      "defaultVariationTargetingOff": "OFF",
+      "defaultVariationTargetingOn": "OFF",
+      "rolloutRules": [
+        {
+          "type": "CONDITIONAL",
+          "conditionalDistribution": [
+            {
+              "variation": "ON",
+              "condition": "a =\"6\" OR b = \"66\""
+            }
+          ]
+        },
+        {
+          "type": "PERCENT",
+          "percentDistribution": [
+            {
+              "variation": "SHADOW",
+              "percent": 90
+            },
+            {
+              "variation": "ON",
+              "percent": 10
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+###
+GET localhost:8080/api/v1/featureflag/all

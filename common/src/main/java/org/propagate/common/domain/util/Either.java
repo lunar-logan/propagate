@@ -1,5 +1,6 @@
 package org.propagate.common.domain.util;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -59,5 +60,20 @@ public class Either<R> {
                 return left(e);
             }
         };
+    }
+
+    public <V> V fold(Function<R, V> success, Function<Exception, V> failure) {
+        if (isSuccess()) {
+            return success.apply(getRight());
+        }
+        return failure.apply(getLeft());
+    }
+
+    public void fold(Consumer<R> success, Consumer<Exception> failure) {
+        if (isSuccess()) {
+            success.accept(getRight());
+        } else {
+            failure.accept(getLeft());
+        }
     }
 }

@@ -1,0 +1,11 @@
+spring:
+  flyway:
+    enabled: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/propagate
+    username: root
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/propagate

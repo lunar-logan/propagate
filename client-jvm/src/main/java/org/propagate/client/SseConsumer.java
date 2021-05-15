@@ -10,11 +10,14 @@ public class SseConsumer {
         CountDownLatch latch = new CountDownLatch(1);
 
         // start the propagate client
-        PropagateClient client = PropagateClient.newPropagateClient("production", "ws://localhost:8080/change-events");
+        final PropagateClient client = PropagateClient.builder()
+                .environment("production")
+                .baseUrl("http://localhost:8080")
+                .buildPollingClient();
         client.run();
 
-        String key = "shipping.partial.delivery.rollout";
-        Thread.sleep(12000);
+        String key = "sd-partial-delivery";
+//        Thread.sleep(12000);
         for (int i = 0; i < 100; i++) {
             String result = client.eval(key, Map.of("a", "6", "b", "66"), () -> "false");
             System.out.println(i + ". Result >>> " + result);
@@ -24,5 +27,6 @@ public class SseConsumer {
 
 //        client.close();
         latch.await();
+        client.close();
     }
 }
