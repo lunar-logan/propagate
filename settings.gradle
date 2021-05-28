@@ -1,6 +1,6 @@
 rootProject.name = 'propagate'
 include 'query-lang'
-include 'client-jvm'
+include 'client'
 include 'common'
 include 'server'
 include 'persistence-mongo'
