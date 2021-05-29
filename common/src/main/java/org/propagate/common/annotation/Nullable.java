@@ -1,4 +1,4 @@
-package org.propagate.common.domain.rollout;
+package org.propagate.common.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

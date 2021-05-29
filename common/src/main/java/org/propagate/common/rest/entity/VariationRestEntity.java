@@ -14,7 +14,6 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-//@JsonAutoDetect
 public class VariationRestEntity {
     private Long id;
     @NotBlank

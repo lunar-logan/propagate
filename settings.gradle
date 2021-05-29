@@ -4,4 +4,5 @@ include 'client'
 include 'common'
 include 'server'
 include 'persistence-mongo'
+include 'core'
 

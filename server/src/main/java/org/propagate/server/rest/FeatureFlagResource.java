@@ -1,16 +1,16 @@
 package org.propagate.server.rest;
 
+import io.atlassian.fugue.Option;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.propagate.common.rest.entity.FeatureFlagRestEntity;
-import org.propagate.server.service.FeatureFlagService;
+import org.propagate.core.service.FeatureFlagService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,7 +28,7 @@ public class FeatureFlagResource extends AbstractFeatureFlagResource {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<FeatureFlagRestEntity>> getAllFeatureFlagsDebug() {
         final List<FeatureFlagRestEntity> allFeatureFlags = service.getAllFeatureFlagsDebug().stream()
                 .map(this::toFeatureFlagRestEntity)
@@ -38,10 +38,14 @@ public class FeatureFlagResource extends AbstractFeatureFlagResource {
 
     @PostMapping
     public ResponseEntity<FeatureFlagRestEntity> createFeatureFlag(@RequestBody @Valid FeatureFlagRestEntity restEntity) {
-        return Optional.ofNullable(service.createFeatureFlag(restEntity))
+        return Option.option(restEntity)
+                .map(AbstractFeatureFlagResource::toFeatureFlag)
+                .map(service::createFeatureFlag)
                 .map(this::toFeatureFlagRestEntity)
-                .map(entity -> ResponseEntity.created(URI.create("/api/v1/featureflag/" + entity.getId())).body(entity))
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+                .fold(
+                        () -> ResponseEntity.badRequest().build(),
+                        entity -> ResponseEntity.created(URI.create("/api/v1/featureflag/" + entity.getId())).body(entity)
+                );
     }
 
     @DeleteMapping("/{id}")
@@ -52,7 +56,7 @@ public class FeatureFlagResource extends AbstractFeatureFlagResource {
 
     @DeleteMapping("/debug/all")
     public ResponseEntity<?> deleteAllFeatureFlagsDebug() {
-        service.deleteAllFeatureFlagsDebug();
+        service.deleteAllFeatureFlags();
         return ResponseEntity.ok().build();
     }
 }

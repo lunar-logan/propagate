@@ -11,7 +11,6 @@ import org.propagate.common.domain.rollout.RolloutRuleType;
 import org.propagate.persistence.mongo.entity.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public final class ConversionHelper {
@@ -36,17 +35,17 @@ public final class ConversionHelper {
 
     public static FeatureFlag convert(FeatureFlagMongoEntity featureFlag) {
         return FeatureFlag.builder()
-                .setId(featureFlag.getId())
-                .setKey(featureFlag.getKey())
-                .setName(featureFlag.getName())
-                .setDescription(featureFlag.getDescription())
-                .setType(FeatureFlagType.valueOf(featureFlag.getType()))
-                .setVariations(featureFlag.getVariations().stream().map(value -> new Variation(null, value)).collect(Collectors.toList()))
-                .setRolloutRules(featureFlag.getRolloutRules() != null ? featureFlag.getRolloutRules().stream().map(ConversionHelper::convert).collect(Collectors.toList()) : null)
-                .setArchived(featureFlag.isArchived())
-                .setTargeting(featureFlag.isTargeting())
-                .setCreated(featureFlag.getCreated())
-                .setLastUpdated(featureFlag.getLastUpdated())
+                .id(featureFlag.getId())
+                .key(featureFlag.getKey())
+                .name(featureFlag.getName())
+                .description(featureFlag.getDescription())
+                .type(FeatureFlagType.valueOf(featureFlag.getType()))
+                .variations(featureFlag.getVariations().stream().map(value -> new Variation(null, value)).collect(Collectors.toList()))
+                .rolloutRules(featureFlag.getRolloutRules() != null ? featureFlag.getRolloutRules().stream().map(ConversionHelper::convert).collect(Collectors.toList()) : null)
+                .archived(featureFlag.isArchived())
+                .targeting(featureFlag.isTargeting())
+                .created(featureFlag.getCreated())
+                .lastUpdated(featureFlag.getLastUpdated())
                 .build();
     }
 
@@ -57,19 +56,19 @@ public final class ConversionHelper {
                 .namespace(rolloutRules.getNamespace())
                 .defaultVariationTargetingOff(rolloutRules.getDefaultVariationTargetingOff().getVariation())
                 .defaultVariationTargetingOn(rolloutRules.getDefaultVariationTargetingOn().getVariation())
-                .created(rolloutRules.getCreated().orElse(null))
-                .lastUpdated(rolloutRules.getLastUpdated().orElse(null))
+                .created(rolloutRules.getCreated())
+                .lastUpdated(rolloutRules.getLastUpdated())
                 .build();
     }
 
     public static RolloutRules convert(RolloutRulesMongoEntity rolloutRules) {
         return RolloutRules.builder()
-                .setRolloutRules(rolloutRules.getRolloutRules() != null ? rolloutRules.getRolloutRules().stream().map(ConversionHelper::convert).collect(Collectors.toList()) : null)
-                .setNamespace(rolloutRules.getNamespace())
-                .setDefaultVariationTargetingOff(new Variation(null, rolloutRules.getDefaultVariationTargetingOff()))
-                .setDefaultVariationTargetingOn(new Variation(null, rolloutRules.getDefaultVariationTargetingOn()))
-                .setCreated(rolloutRules.getCreated())
-                .setLastUpdated(rolloutRules.getLastUpdated())
+                .rolloutRules(rolloutRules.getRolloutRules() != null ? rolloutRules.getRolloutRules().stream().map(ConversionHelper::convert).collect(Collectors.toList()) : null)
+                .namespace(rolloutRules.getNamespace())
+                .defaultVariationTargetingOff(new Variation(null, rolloutRules.getDefaultVariationTargetingOff()))
+                .defaultVariationTargetingOn(new Variation(null, rolloutRules.getDefaultVariationTargetingOn()))
+                .created(rolloutRules.getCreated())
+                .lastUpdated(rolloutRules.getLastUpdated())
                 .build();
     }
 
@@ -78,15 +77,15 @@ public final class ConversionHelper {
                 .ruleType(rolloutRule.getRuleType().name())
                 .conditionalDistribution(toConditionalDistributionMongoEntities(rolloutRule.getConditionalDistribution()))
                 .percentDistribution(toPercentDistributionMongoEntities(rolloutRule.getPercentDistribution()))
-                .created(rolloutRule.getCreated().orElse(null))
-                .lastUpdated(rolloutRule.getLastUpdated().orElse(null))
+                .created(rolloutRule.getCreated())
+                .lastUpdated(rolloutRule.getLastUpdated())
                 .build();
     }
 
-    private static List<PercentDistributionMongoEntity> toPercentDistributionMongoEntities(Optional<List<PercentDistribution>> percentDistribution) {
-        return percentDistribution
-                .map(list -> list.stream().map(ConversionHelper::convert).collect(Collectors.toList()))
-                .orElse(null);
+    private static List<PercentDistributionMongoEntity> toPercentDistributionMongoEntities(List<PercentDistribution> percentDistribution) {
+        return percentDistribution.stream()
+                .map(ConversionHelper::convert)
+                .collect(Collectors.toList());
     }
 
     private static List<PercentDistribution> toPercentDistributionList(List<PercentDistributionMongoEntity> percentDistributionMongoEntities) {
@@ -105,10 +104,10 @@ public final class ConversionHelper {
         return new PercentDistribution(percentDistribution.getPercent(), new Variation(null, percentDistribution.getVariation()));
     }
 
-    private static List<ConditionalDistributionMongoEntity> toConditionalDistributionMongoEntities(Optional<List<ConditionalDistribution>> conditionalDistribution) {
-        return conditionalDistribution
-                .map(dist -> dist.stream().map(ConversionHelper::convert).collect(Collectors.toList()))
-                .orElse(null);
+    private static List<ConditionalDistributionMongoEntity> toConditionalDistributionMongoEntities(List<ConditionalDistribution> conditionalDistribution) {
+        return conditionalDistribution.stream()
+                .map(ConversionHelper::convert)
+                .collect(Collectors.toList());
     }
 
     private static List<ConditionalDistribution> toConditionalDistributionList(List<ConditionalDistributionMongoEntity> conditionalDistributionMongoEntities) {
@@ -129,11 +128,11 @@ public final class ConversionHelper {
 
     public static RolloutRule convert(RolloutRuleMongoEntity rolloutRule) {
         return RolloutRule.builder()
-                .setRuleType(RolloutRuleType.valueOf(rolloutRule.getRuleType()))
-                .setConditionalDistribution(toConditionalDistributionList(rolloutRule.getConditionalDistribution()))
-                .setPercentDistribution(toPercentDistributionList(rolloutRule.getPercentDistribution()))
-                .setCreated(rolloutRule.getCreated())
-                .setLastUpdated(rolloutRule.getLastUpdated())
+                .ruleType(RolloutRuleType.valueOf(rolloutRule.getRuleType()))
+                .conditionalDistribution(toConditionalDistributionList(rolloutRule.getConditionalDistribution()))
+                .percentDistribution(toPercentDistributionList(rolloutRule.getPercentDistribution()))
+                .created(rolloutRule.getCreated())
+                .lastUpdated(rolloutRule.getLastUpdated())
                 .build();
     }
 }

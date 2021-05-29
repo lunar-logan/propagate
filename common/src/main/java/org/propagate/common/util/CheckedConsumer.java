@@ -1,4 +1,4 @@
-package org.propagate.common.domain.util;
+package org.propagate.common.util;
 
 @FunctionalInterface
 public interface CheckedConsumer<T> {

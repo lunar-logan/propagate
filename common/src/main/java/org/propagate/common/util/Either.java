@@ -1,4 +1,4 @@
-package org.propagate.common.domain.util;
+package org.propagate.common.util;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
