@@ -1,22 +1,41 @@
-# Propagate - feature flagging 
+Propagate - feature flagging
+============================
 
-## Getting Started
+Getting Started
+---------------
 
-1. Update mongodb **host** and **port** at `server-netty/src/main/resources/application.properties`
-2. Start Propagate server from `server-netty/src/main/java/org/propagate/reactive/PropagateReactiveServer.java`
+### Starting Propagate server
 
-Sample client usage: `client-jvm/src/main/java/org/propagate/client/SseConsumer.java`
+- Start MongoDB server 
+- Update the mongo **host** and **port** in `server/src/main/resources/application.yml`
+- Run `./gradlew bootRun`
+- Run `./gradlew test` to verify 
 
-### Reference Documentation
-For further reference, please consider the following sections:
+### Client 
+A sample client usage can be [found here](client/src/main/java/org/propagate/client/SseConsumer.java)
 
-* [Official Gradle documentation](https://docs.gradle.org)
-* [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.4.1/gradle-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.4.1/gradle-plugin/reference/html/#build-image)
-* [Spring Configuration Processor](https://docs.spring.io/spring-boot/docs/2.4.1/reference/htmlsingle/#configuration-metadata-annotation-processor)
+Requirements
+------------
+ - JDK 11+
+ - Gradle for building
+ - MongoDB
+ - Antlr (required if modifying the query lang)
 
-### Additional Links
-These additional references should also help you:
+Authors
+-------
 
-* [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
+License
+-------
+Copyright 2021 Authors of Propagate
 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
