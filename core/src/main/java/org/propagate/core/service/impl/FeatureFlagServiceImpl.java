@@ -96,7 +96,7 @@ public class FeatureFlagServiceImpl implements FeatureFlagService {
     }
 
     @Override
-    public List<FeatureFlag> getAllFeatureFlagsDebug() {
+    public List<FeatureFlag> getAllFeatureFlags() {
         return dao.findAll();
     }
 

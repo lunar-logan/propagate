@@ -53,34 +53,34 @@ public abstract class AbstractFeatureFlagResource {
                 .build();
     }
 
-    private static List<PercentDistributionRestEntity> toPercentDistributionRestEntities(List<PercentDistribution> percentDistribution) {
+    protected List<PercentDistributionRestEntity> toPercentDistributionRestEntities(List<PercentDistribution> percentDistribution) {
         if(percentDistribution == null) {
             return null;
         }
 
         return percentDistribution.stream()
-                .map(AbstractFeatureFlagResource::toPercentDistributionRestEntity)
+                .map(this::toPercentDistributionRestEntity)
                 .collect(Collectors.toList());
     }
 
-    private static PercentDistributionRestEntity toPercentDistributionRestEntity(PercentDistribution percentDistribution) {
+    protected PercentDistributionRestEntity toPercentDistributionRestEntity(PercentDistribution percentDistribution) {
         return new PercentDistributionRestEntity(percentDistribution.getPercent(), percentDistribution.getVariation().getVariation());
     }
 
-    private static List<ConditionalDistributionRestEntity> toConditionalDistributionRestEntities(List<ConditionalDistribution> conditionalDistribution) {
+    protected List<ConditionalDistributionRestEntity> toConditionalDistributionRestEntities(List<ConditionalDistribution> conditionalDistribution) {
         if(conditionalDistribution==null) {
             return null;
         }
         return conditionalDistribution.stream()
-                .map(AbstractFeatureFlagResource::toConditionalDistributionRestEntity)
+                .map(this::toConditionalDistributionRestEntity)
                 .collect(Collectors.toList());
     }
 
-    private static ConditionalDistributionRestEntity toConditionalDistributionRestEntity(ConditionalDistribution conditionalDistribution) {
+    protected ConditionalDistributionRestEntity toConditionalDistributionRestEntity(ConditionalDistribution conditionalDistribution) {
         return new ConditionalDistributionRestEntity(conditionalDistribution.getCondition(), conditionalDistribution.getVariation().getVariation());
     }
 
-    public static FeatureFlag toFeatureFlag(FeatureFlagRestEntity featureFlagRestEntity) {
+    protected FeatureFlag toFeatureFlag(FeatureFlagRestEntity featureFlagRestEntity) {
         return FeatureFlag.builder()
                 .id(featureFlagRestEntity.getId())
                 .key(featureFlagRestEntity.getKey())
@@ -88,7 +88,7 @@ public abstract class AbstractFeatureFlagResource {
                 .description(featureFlagRestEntity.getDescription())
                 .type(FeatureFlagType.valueOf(featureFlagRestEntity.getType()))
                 .variations(featureFlagRestEntity.getVariations().stream().map(variationInitializer).collect(Collectors.toList()))
-                .rolloutRules(featureFlagRestEntity.getRolloutRules() != null ? featureFlagRestEntity.getRolloutRules().stream().map(AbstractFeatureFlagResource::toRolloutRules).collect(Collectors.toList()) : null)
+                .rolloutRules(featureFlagRestEntity.getRolloutRules() != null ? featureFlagRestEntity.getRolloutRules().stream().map(this::toRolloutRules).collect(Collectors.toList()) : null)
                 .archived(featureFlagRestEntity.isArchived())
                 .targeting(featureFlagRestEntity.isTargeting())
                 .created(featureFlagRestEntity.getCreated())
@@ -96,7 +96,7 @@ public abstract class AbstractFeatureFlagResource {
                 .build();
     }
 
-    public static RolloutRules toRolloutRules(RolloutRulesRestEntity rolloutRulesRestEntity) {
+    protected RolloutRules toRolloutRules(RolloutRulesRestEntity rolloutRulesRestEntity) {
         return RolloutRules.builder()
                 .namespace(rolloutRulesRestEntity.getNamespace())
                 .defaultVariationTargetingOff(variationInitializer.apply(rolloutRulesRestEntity.getDefaultVariationTargetingOff()))
@@ -105,17 +105,17 @@ public abstract class AbstractFeatureFlagResource {
                 .build();
     }
 
-    private static List<RolloutRule> toRolloutRuleModelList(List<RolloutRuleRestEntity> rolloutRules) {
+    protected List<RolloutRule> toRolloutRuleModelList(List<RolloutRuleRestEntity> rolloutRules) {
         if (rolloutRules == null) {
             return null;
         }
 
         return rolloutRules.stream()
-                .map(AbstractFeatureFlagResource::toRolloutRules)
+                .map(this::toRolloutRules)
                 .collect(Collectors.toList());
     }
 
-    public static RolloutRule toRolloutRules(RolloutRuleRestEntity rolloutRuleRestEntity) {
+    protected RolloutRule toRolloutRules(RolloutRuleRestEntity rolloutRuleRestEntity) {
         return RolloutRule.builder()
                 .ruleType(RolloutRuleType.valueOf(rolloutRuleRestEntity.getType()))
                 .conditionalDistribution(toConditionalDistributions(rolloutRuleRestEntity.getConditionalDistribution()))
@@ -125,30 +125,30 @@ public abstract class AbstractFeatureFlagResource {
                 .build();
     }
 
-    private static List<PercentDistribution> toPercentDistributions(List<PercentDistributionRestEntity> percentDistribution) {
+    protected List<PercentDistribution> toPercentDistributions(List<PercentDistributionRestEntity> percentDistribution) {
         if(percentDistribution == null) {
             return null;
         }
 
         return percentDistribution.stream()
-                .map(AbstractFeatureFlagResource::toPercentDistribution)
+                .map(this::toPercentDistribution)
                 .collect(Collectors.toList());
     }
 
-    private static PercentDistribution toPercentDistribution(PercentDistributionRestEntity percentDistributionRestEntity) {
+    protected PercentDistribution toPercentDistribution(PercentDistributionRestEntity percentDistributionRestEntity) {
         return new PercentDistribution(percentDistributionRestEntity.getPercent(), new Variation(null, percentDistributionRestEntity.getVariation()));
     }
 
-    private static List<ConditionalDistribution> toConditionalDistributions(List<ConditionalDistributionRestEntity> conditionalDistribution) {
+    protected List<ConditionalDistribution> toConditionalDistributions(List<ConditionalDistributionRestEntity> conditionalDistribution) {
         if(conditionalDistribution==null) {
             return null;
         }
         return conditionalDistribution.stream()
-                .map(AbstractFeatureFlagResource::toConditionalDistribution)
+                .map(this::toConditionalDistribution)
                 .collect(Collectors.toList());
     }
 
-    private static ConditionalDistribution toConditionalDistribution(ConditionalDistributionRestEntity conditionalDistributionRestEntity) {
+    protected ConditionalDistribution toConditionalDistribution(ConditionalDistributionRestEntity conditionalDistributionRestEntity) {
         return new ConditionalDistribution(conditionalDistributionRestEntity.getCondition(), new Variation(null, conditionalDistributionRestEntity.getVariation()));
     }
 }

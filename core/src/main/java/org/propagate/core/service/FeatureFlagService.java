@@ -10,7 +10,7 @@ public interface FeatureFlagService {
 
     Optional<FeatureFlag> getFeatureFlagById(String featureFlagId);
 
-    List<FeatureFlag> getAllFeatureFlagsDebug();
+    List<FeatureFlag> getAllFeatureFlags();
 
     List<FeatureFlag> getAllFeatureFlags(int page, int size);
 

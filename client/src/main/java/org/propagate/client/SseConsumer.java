@@ -24,8 +24,6 @@ public class SseConsumer {
             Thread.sleep(3000);
         }
 
-
-//        client.close();
         latch.await();
         client.close();
     }

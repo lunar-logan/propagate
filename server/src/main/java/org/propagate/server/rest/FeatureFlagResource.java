@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,24 +23,31 @@ public class FeatureFlagResource extends AbstractFeatureFlagResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<FeatureFlagRestEntity> getFeatureFlagById(@PathVariable String id) {
-        return service.getFeatureFlagById(id)
+        return Option.option(id)
+                .flatMap(ffId -> Option.fromOptional(service.getFeatureFlagById(ffId)))
                 .map(this::toFeatureFlagRestEntity)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .fold(
+                        () -> ResponseEntity.notFound().build(),
+                        ResponseEntity::ok
+                );
     }
 
     @GetMapping
-    public ResponseEntity<List<FeatureFlagRestEntity>> getAllFeatureFlagsDebug() {
-        final List<FeatureFlagRestEntity> allFeatureFlags = service.getAllFeatureFlagsDebug().stream()
-                .map(this::toFeatureFlagRestEntity)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(allFeatureFlags);
+    public ResponseEntity<List<FeatureFlagRestEntity>> getAllFeatureFlags() {
+        return Option.option(service.getAllFeatureFlags())
+                .map(Collection::stream)
+                .map(stream -> stream.map(this::toFeatureFlagRestEntity))
+                .map(stream -> stream.collect(Collectors.toList()))
+                .fold(
+                        () -> ResponseEntity.notFound().build(),
+                        ResponseEntity::ok
+                );
     }
 
     @PostMapping
     public ResponseEntity<FeatureFlagRestEntity> createFeatureFlag(@RequestBody @Valid FeatureFlagRestEntity restEntity) {
         return Option.option(restEntity)
-                .map(AbstractFeatureFlagResource::toFeatureFlag)
+                .map(this::toFeatureFlag)
                 .map(service::createFeatureFlag)
                 .map(this::toFeatureFlagRestEntity)
                 .fold(
