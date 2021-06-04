@@ -34,4 +34,10 @@ public class PropagateClientBuilder {
         final FeatureFlagEvaluationService featureFlagEvaluationService = new FeatureFlagEvaluationServiceImpl();
         return new PropagateHttpClient(tenantContext, featureFlagClient, featureFlagEvaluationService);
     }
+
+    public PropagateClient buildAndStartPollingClient() {
+        final PropagateClient client = buildPollingClient();
+        client.run();
+        return client;
+    }
 }

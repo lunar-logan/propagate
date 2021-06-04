@@ -16,8 +16,8 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.1'
     implementation 'net.jodah:failsafe:2.4.0'
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
-    compile project(':query-lang')
-    compile project(':common')
+    implementation project(':query-lang')
+    implementation project(':common')
 }
 
 test {
