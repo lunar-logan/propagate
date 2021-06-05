@@ -1,9 +1,6 @@
 package org.propagate.persistence.mongo.helper;
 
-import org.propagate.common.domain.FeatureFlag;
-import org.propagate.common.domain.FeatureFlagType;
-import org.propagate.common.domain.RolloutRules;
-import org.propagate.common.domain.Variation;
+import org.propagate.common.domain.*;
 import org.propagate.common.domain.rollout.ConditionalDistribution;
 import org.propagate.common.domain.rollout.PercentDistribution;
 import org.propagate.common.domain.rollout.RolloutRule;
@@ -133,6 +130,26 @@ public final class ConversionHelper {
                 .percentDistribution(toPercentDistributionList(rolloutRule.getPercentDistribution()))
                 .created(rolloutRule.getCreated())
                 .lastUpdated(rolloutRule.getLastUpdated())
+                .build();
+    }
+
+    public static UserMongoEntity convert(final User user) {
+        return UserMongoEntity.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .build();
+    }
+
+    public static User convert(final UserMongoEntity user) {
+        return User.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .password(user.getPassword())
                 .build();
     }
 }

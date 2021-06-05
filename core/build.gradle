@@ -14,7 +14,8 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testImplementation group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
     testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
-
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+    annotationProcessor "org.projectlombok:lombok:1.18.16"
     compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
     implementation project(":common")
 }
