@@ -17,6 +17,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.16'
     annotationProcessor "org.projectlombok:lombok:1.18.16"
     compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+    compileOnly 'net.aholbrook.paseto:meta:0.6.1'
     implementation project(":common")
 }
 
