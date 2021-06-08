@@ -1,4 +1,4 @@
-package org.propagate.core.service.impl;
+package org.propagate.core.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,7 @@ import org.propagate.core.auth.Authenticator;
 import org.propagate.core.auth.AuthenticatorFactory;
 import org.propagate.core.auth.EmailPasswordAuthenticatorImpl;
 import org.propagate.core.auth.PasswordUtils;
-import org.propagate.core.service.UserService;
+import org.propagate.core.service.impl.UserServiceImpl;
 
 import java.util.Optional;
 
